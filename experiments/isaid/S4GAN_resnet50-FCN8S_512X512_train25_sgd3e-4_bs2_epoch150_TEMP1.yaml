@@ -1,0 +1,59 @@
+CUDNN:
+  BENCHMARK: true
+  DETERMINISTIC: false
+  ENABLED: true
+GPUS: (0, 1)
+OUTPUT_DIR: '/home/ubuntu/lijiahao/Semantic_Segmentation/S4GAN-MLMT/outputs'
+WORKERS: 4
+PRINT_FREQ: 10
+
+DATASET:
+  DATASET: isaid
+  ROOT: '/home/ubuntu/lijiahao/Datasets/ISAID'
+  TEST_SET: '/home/ubuntu/lijiahao/Semantic_Segmentation/S4GAN-MLMT/lib/data/isaid_list/val.lst'
+  TRAIN_SET: '/home/ubuntu/lijiahao/Semantic_Segmentation/S4GAN-MLMT/lib/data/isaid_list/train.lst'
+  NUM_CLASSES: 16
+  LABELED_RATIO: 0.25
+  TRAINSIZE: 1411
+MODEL:
+  NAME: resnet50_FCN8s
+  NAME_D: discriminator_s4GAN
+  NUM_OUTPUTS: 2
+  PRETRAINED: "/home/ubuntu/lijiahao/Pretrained_models/resnet50-19c8e357.pth"
+LOSS:
+  # USE_OHEM: true
+  BALANCE_WEIGHTS: [0.4, 1.0]
+TRAIN:
+  IMAGE_SIZE:
+  - 512
+  - 512
+  BASE_SIZE: 1024
+  BATCH_SIZE_PER_GPU: 4
+  END_EPOCH: 150
+  LR: 3e-4
+  LR_D: 1e-4
+  THRESHOLD_ST: 0.9
+  WD: 0.0005
+  MOMENTUM: 0.9
+  NESTEROV: false
+  FLIP: true
+  DOWNSAMPLERATE: 1
+  IGNORE_LABEL: -1
+  SCALE_FACTOR: 16
+  ST_BEGIN_EPOCH: 50
+  ST_AGAIN_EPOCH: 100
+  VALID_PER_EPOCH: 1
+TEST:
+  MODEL_FILE: '/home/ubuntu/lijiahao/Semantic_Segmentation/S4GAN-MLMT/outputs/postdam/S4GAN_resnet50-FCN8S_512X512_train25_sgd3e-4_bs2_epoch150_TEMP1/best_PA.pth'
+  MODEL_D_FILE: '/home/ubuntu/lijiahao/Semantic_Segmentation/S4GAN-MLMT/outputs/postdam/S4GAN_resnet50-FCN8S_512X512_train25_sgd3e-4_bs2_epoch150_TEMP1/checkpoint_D.pth'
+  IMAGE_SIZE:
+  - 512
+  - 512
+  BASE_SIZE: 1024
+  FLIP_TEST: true
+  MULTI_SCALE: true
+  OUTPUT_INDEX: -1
+S4GAN:
+  ENABLED: true
+TEMP:
+  INSTRUCTIONS: 'S4GAN； 25%数据量； resnet50； 阈值为0.9的loss_ST；'

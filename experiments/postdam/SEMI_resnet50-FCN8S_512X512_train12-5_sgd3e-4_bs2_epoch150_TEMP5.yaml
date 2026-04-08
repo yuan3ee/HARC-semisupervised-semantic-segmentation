@@ -1,0 +1,131 @@
+CUDNN:
+  BENCHMARK: true
+  DETERMINISTIC: false
+  ENABLED: true
+GPUS: (0,1)
+OUTPUT_DIR:  '/home/ly/LY/Semi-RC-segmentation/outputs'
+WORKERS: 0 #4
+PRINT_FREQ: 10
+
+DATASET:
+  DATASET: postdam
+  ROOT: '/home/ly/LY/Dataset/potsdam/512'
+  TEST_SET: '/home/ly/LY/Dataset/potsdam/512/val.lst'
+  TRAIN_SET: '/home/ly/LY/Dataset/potsdam/512/train.lst'
+  NUM_CLASSES: 6
+  LABELED_RATIO: 0.25
+  TRAINSIZE: 6144
+MODEL:
+  NAME: resnet50_FCN8s_RegionContrast
+  NAME_D: discriminator_DUL
+  NUM_OUTPUTS: 2
+  PRETRAINED: "/home/ly/下载/weight_resnet/resnet50-19c8e357.pth"
+  # EXTRA:
+  #   FINAL_CONV_KERNEL: 1
+  #   STAGE1:
+  #     NUM_MODULES: 1
+  #     NUM_RANCHES: 1
+  #     BLOCK: BOTTLENECK
+  #     NUM_BLOCKS:
+  #     - 4
+  #     NUM_CHANNELS:
+  #     - 64
+  #     FUSE_METHOD: SUM
+  #   STAGE2:
+  #     NUM_MODULES: 1
+  #     NUM_BRANCHES: 2
+  #     BLOCK: BASIC
+  #     NUM_BLOCKS:
+  #     - 4
+  #     - 4
+  #     NUM_CHANNELS:
+  #     - 48
+  #     - 96
+  #     FUSE_METHOD: SUM
+  #   STAGE3:
+  #     NUM_MODULES: 4
+  #     NUM_BRANCHES: 3
+  #     BLOCK: BASIC
+  #     NUM_BLOCKS:
+  #     - 4
+  #     - 4
+  #     - 4
+  #     NUM_CHANNELS:
+  #     - 48
+  #     - 96
+  #     - 192
+  #     FUSE_METHOD: SUM
+  #   STAGE4:
+  #     NUM_MODULES: 3
+  #     NUM_BRANCHES: 4
+  #     BLOCK: BASIC
+  #     NUM_BLOCKS:
+  #     - 4
+  #     - 4
+  #     - 4
+  #     - 4
+  #     NUM_CHANNELS:
+  #     - 48
+  #     - 96
+  #     - 192
+  #     - 384
+  #     FUSE_METHOD: SUM
+LOSS:
+  USE_OHEM: true
+  # LAMBDA_FM: 0.1
+  BALANCE_WEIGHTS: [0.4, 1.0]
+TRAIN:
+  IMAGE_SIZE:
+  - 512
+  - 512
+  BASE_SIZE: 1024
+  BATCH_SIZE_PER_GPU: 2
+  END_EPOCH: 200
+  LR: 3e-4
+  LR_D: 1e-4
+  THRESHOLD_ST: 0.5
+  THRESHOLD_ST_ANTI: 0.0
+  WD: 0.0005
+  MOMENTUM: 0.9
+  NESTEROV: false
+  FLIP: true
+  DOWNSAMPLERATE: 1
+  IGNORE_LABEL: -1
+  SCALE_FACTOR: 16
+  ST_BEGIN_EPOCH: 50
+  ST_AGAIN_EPOCH: 100
+  ST_AF: 0.3
+  VALID_PER_EPOCH: 1
+  # THRESHOLD_SOFT_ST: 0.0
+  # THRESHOLD_SOFT_ST_ANTI: 0.99
+  # CCT: true
+  # FULL: true
+TEST:
+  MODEL_FILE: './outputs/postdam/1_8_0718_unsuper0-1/best_mIoU.pth'
+  MODEL_D_FILE: './outputs/postdam/SEMI_onlinesoft0-1_Dis-Soft0_12-5/checkpoint_D.pth'
+  IMAGE_SIZE:
+  - 512
+  - 512
+  BASE_SIZE: 1024
+  FLIP_TEST: false
+  MULTI_SCALE: false
+  OUTPUT_INDEX: -1
+# VAT:
+#   ENABLE: true
+# DROPOUT:
+#   ENABLE: true
+# CUTOUT:
+#   ENABLE: true
+# CONTEXTMASKING:
+#   ENABLE: true
+# OBJECTMASKING:
+#   ENABLE: true
+# FEATUREDROP:
+#   ENABLE: true
+# FEATURENOISE:
+#   ENABLE: true
+# DEBUG:
+#   DEBUG: true
+TEMP:
+  INSTRUCTIONS: '12.5%数据量；resnet50；阈值为0.5的loss_ST'
+  # OTHER: [0.7, 0.06, 0.8, 0.2]
